@@ -61,7 +61,7 @@ freebase_ui_app.controller('freebaseController', ['$scope', '$modal', 'dataServi
     $scope.authenticated = false;
     $scope.dburl = "127.0.0.1";
     $scope.dbport = 8000;
-    $scope.dbsecret = "freebase-ui";
+    $scope.dbsecret = "test_secret";
 
     $scope.openModal = function (templatePath, controller, handler, args) {
             var modalInstance = $modal.open({

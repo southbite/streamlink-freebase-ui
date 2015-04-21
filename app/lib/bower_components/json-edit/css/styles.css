@@ -78,7 +78,7 @@
 .jsonView .addObjectItemBtn i {
     display: block;
 }
-.jsonView .deleteKeyBtn, .jsonView .moveArrayItemBtn {
+.jsonView .deleteKeyBtn, .jsonView .moveArrayItemBtn, .jsonView .viewJSONBtn {
     float: right;
     margin-right: 10px;
     position: relative;

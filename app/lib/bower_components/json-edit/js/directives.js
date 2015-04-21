@@ -98,7 +98,30 @@ angular.module('JSONedit', ['ui.sortable'])
                 console.error("object to delete from was " + obj);
             }
         };
+        scope.viewJSON = function(obj, key) {
+            try{
+                prompt("Here is the JSON", angular.toJson(obj[key]));
+            }
+            catch(e){
+
+            }
+        };
         scope.addItem = function(obj) {
+            console.log(obj);
+
+            if (scope.valueType == objectName){
+                var insertObj = {};
+                var template = prompt("You want to inject some JSON?");
+
+                if (template){
+                    try{
+                        insertObj = JSON.parse(template);
+                    }catch(e){
+                        alert("Bad template entered please make sure it is JSON");
+                    }
+                }
+            }
+
             if (getType(obj) == "Object") {
                 // check input for key
                 if (scope.keyName == undefined || scope.keyName.length == 0){
@@ -114,12 +137,15 @@ angular.module('JSONedit', ['ui.sortable'])
                             return;
                         }
                     }
+                    console.log(scope.valueType);
                     // add item to object
                     switch(scope.valueType) {
                         case stringName: obj[scope.keyName] = scope.valueName ? scope.possibleNumber(scope.valueName) : "";
                                         break;
-                        case objectName:  obj[scope.keyName] = {};
-                                        break;
+                        case objectName:  {
+                            obj[scope.keyName] = insertObj;
+                            break;
+                        }           
                         case arrayName:   obj[scope.keyName] = [];
                                         break;
                         case refName: obj[scope.keyName] = {"Reference!!!!": "todo"};
@@ -135,7 +161,7 @@ angular.module('JSONedit', ['ui.sortable'])
                 switch(scope.valueType) {
                     case stringName: obj.push(scope.valueName ? scope.valueName : "");
                                     break;
-                    case objectName:  obj.push({});
+                    case objectName:  obj.push(insertObj);
                                     break;
                     case arrayName:   obj.push([]);
                                     break;
@@ -151,6 +177,8 @@ angular.module('JSONedit', ['ui.sortable'])
         scope.possibleNumber = function(val) {
             return isNumber(val) ? parseFloat(val) : val;
         };
+
+
 
         //////
         // Template Generation
@@ -176,8 +204,9 @@ angular.module('JSONedit', ['ui.sortable'])
             + '<span ng-switch-when="true">';
                 if (scope.type == "object"){
                    // input key
+                    scope.objectTemplate = '';
                     addItemTemplate += '<input placeholder="Name" type="text" ui-keyup="{\'enter\':\'addItem(child)\'}" '
-                        + 'class="form-control input-sm addItemKeyInput" ng-model="$parent.keyName" /> ';
+                        + 'class="form-control input-sm addItemKeyInput" ng-model="$parent.keyName" />';
                 }
                 addItemTemplate += 
                 // value type dropdown
@@ -209,6 +238,7 @@ angular.module('JSONedit', ['ui.sortable'])
                             + 'ng-blur="moveKey(child, key, newkey)"/>'
                         // delete button
                         + '<i class="deleteKeyBtn glyphicon glyphicon-trash" ng-click="deleteKey(child, key)"></i>'
+                        + '<i class="viewJSONBtn glyphicon glyphicon-eye-open" ng-click="viewJSON(child, key)"></i>'
                     + '</span>'
                     // object value
                     + '<span class="jsonObjectValue">' + switchTemplate + '</span>'
